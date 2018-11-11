@@ -1,0 +1,102 @@
+1、构建array对象
+(1)通过list
+a = [[1,2,3],[1,2,4],[2,3,4]]
+b=np.array(a)#构建的3行3列的数组
+(2)内置的方法
+np.zeros((2,3))#构建2行3列的全0数组
+np.ones((2,3))#构建2行3列的全1数组
+np.empty((2,3))#构建2行3列的空值数组
+np.full((2,3),10)#构建2行3列全为10的数组
+np.eye(4)#构建类似于3X3的单位矩阵
+(3)通过随机数
+np.random.randn(2,3)#正态分布
+np.random.randint(0,10,(2,3))#构建2X3的数组，数组里面的值在[0,10)的里面整数
+np.random.rand(2,3)#构建2X3的数组，数组里面的值服从均匀分布X~U(0,1)
+(4)通过reshape()
+np.arange(0,100,1).reshape(10,10)#构建10X10的数组
+
+2、取数
+（1）切片索引
+arr=np.arange(0,100,1).reshape(10,10)
+c=arr[:5]#只对行做切片索引
+c=arr[:,:5]#只对行做切片索引
+b=arr[:5,2:4]/arr[:5][:,2:4]#针对行和列的切片索引
+（2）花式索引
+arr=np.arange(0,100,1).reshape(10,10)
+e=arr[[4,2,1],:]#针对行花式索引
+f=arr[:,[-4,-2,-1]]#针对列花式索引
+g=arr[[4,2,1],[3,5,4]]#取出来的数对应的索引(4,3)、（2,5）、（1,4）对应的三个数
+i = arr[[4,2,1],:][:,[5,2,1]]#取出来的数第4/2/1行和5/2/1列，3X3数组
+i = arr[np.ix_([4,2,1],[5,2,1])]#同上
+（3）布尔型索引
+I:针对数组里面的每一个位置进行bool判断
+arr=np.arange(0,100,1).reshape(10,10)
+bool_arr = arr>50#布尔型的矩阵
+arr[bool_arr]#取出来的数是一个列表，bool_arr对应的True的位置的数
+II:只针对行或列进行bool取数
+arr=np.arange(0,6,1).reshape(3,2)
+bool_inx = [True,Flase,True]
+arr[bool_index]#针对行，通过bool取数
+bool_col=[False,True]
+arr[:,bool_col]#针对列，通过bool取数
+
+3、运算
+（1）同shape大小数组的运算
+o=arr+arr
+o=np.add(arr,arr)#加
+p = arr-arr
+p = np.subtract(arr,arr)#减
+q = arr*arr
+q = np.multiply(arr,arr)#乘
+r = arr/arr
+r = np.divide(arr,arr)#除
+（2）array和标量之间的运算：对数组里面每个元素都进行相应的运算
+arr+1#数组里面每个元素都+1
+1/arr#对数组里面每个元素都求倒数
+arr**0.5#求平方根
+
+(3)ufunc#都是针对元素级进行计算
+(I) 一元的函数
+abs()/fabs()#绝对值
+sqrt()#平方根
+square()#平方
+modf()#返回两个数组，一个是返回整数部分，一个是返回小数部分
+exp()#指数
+log()/log2()/log10()#对数
+sign()#符号函数
+ceil()#向上取整
+floor()#向下取整
+rint()#四舍五入取整
+isnan(arr)#判断是否为空，如果是的缺失值的话就是True
+(II)二元函数
+power(arr,arr1)#取arr的arr1次方
+mod()#取余数
+logical_and/logical_or/logical_xor#与、或、异或
+
+(4)线性代数
+arr.T#转置
+arr.dot(arr1)#arr数组和arr1数组内积
+arr.trace()#求矩阵的迹
+np.linalg.eig(arr)#求方阵arr的特征值和特征向量
+np.linalg.inv(arr)#求arr数组的逆
+
+4.关于判断
+（1）np.where(cond,arr,arr1)#逐元素级判断
+（2）np.any(arr)#判断bool矩阵里面是否有True,如果有的话，返回True,否则就返回False
+（3）np.all(arr)#判断bool矩阵里面是否全为True,如果全为True，返回True
+（4）np.isnan(arr)#判断是否有空值
+
+5.统计量
+（1）sum()/sum(axis=0)#求和
+（2）mean()/mean(axis=0)#求平均值
+（3）std()/std(axis=0)#求标准差
+（4）cumsum()/cumprod()#累积和、累积积
+
+6.排序
+(1)np.unique()#返回独一无二的元素
+(2)np.sort()#排序
+
+7.导入/导出
+np.save()/np.load()#存储或者导出一个array
+np.savez()/np.load()#存储或者导出多个array
+np.savetxt('filename.txt',arr,delimiter='分隔符')/np.loadtxt('filename.txt',delimiter='分隔符')#针对txt格式的导入和导出

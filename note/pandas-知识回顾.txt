@@ -1,0 +1,173 @@
+1、pandas的数据结构对象
+1.1构建DataFrame
+(1)读取文件
+df=pd.read_csv(filename,encoding='utf-8',sep=None,header=0,index_col=None,parse_dates=['Date'],dtype={'prince':'float64'})
+(2)字典、list-like
+dict={'columns1':[],'columns2':[]}#字典的key是对DateFrame列索引名，value中每个list的长度要一致
+df = pd.DateFrame(dict,index=None)
+1.2构建Series
+Series对象主要是有index和value
+pd.Series(date,index=None)#date可以是list-like、字典
+
+2、查看DateFrame信息
+(1)df.index#查看行索引名
+(2)df.columns#查看列索引名
+(3)df.shape#查看DateFrame的shape
+(4)df.head()#查看前[5]行的值
+(5)df.tail()#查看后[5]行的值
+(6)df.dtypes#查看每列的数据类型
+(7)df.info()#查看每列的数量、每列的类型、列名、占内存大小、数据类型的统计
+(8)df.values#查看数据
+
+3、索引
+(1)取列
+df['columns1']#取一列，返回的Series
+df[['columns1','columns2']]#取多列,返回的是DateFrame
+(2)iloc、loc
+df.iloc[1:8,[1,5,3]]#iloc针对的是索引,可以切片索引
+df.loc[['index1','index2'],'columns1':'columns2']#loc针对的是索引名，也可以用切片
+(3)布尔型索引
+df[df['columns1']>=30]#columns1这一列小于等于30的值被滤除
+
+4.其他
+(1)判断:常用于滤除数据
+df['columns1'].isna()#判断某一列是否有缺失值，如果有，对应的位置为True
+df.isna()#判断整个数据表是否有缺失值，如果有，对应的位置为True
+
+df['columns1'].notna()#等价于~df['columns1'].isna()
+
+df.isin(['elem1','elem2'])#判断df数据表里面每个元素是否在对应的列表里面，如果在，对应的位置为True
+(2)其他：针对Series对象
+df['columns1'].unique()#返回某一列独一无二的值
+df['columns'].value_counts()#返回的是Series中每个value的频数
+
+5.可视化
+5.1 matplotlib.pyplot
+（1）绘制一个图
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10,5))#设置图像显示大小
+plt.plot(x,y,color,linestyle,marker,markerstyle)#绘制线状图
+plt.hist(y,bins,density)#绘制条形图
+plt.bar(x,y,alpha)#绘制柱状图，alpha指的是透明度
+plt.scatter(x,y,maker='^'，markersize)#绘制散点图，marker可以是（*：star/^:三角/s:方块/o:圆）
+plt.pie(x,labels,autopct,explode)#绘制饼状图
+
+plt.title()#标题
+plt.text(x,y,'要插入的文本')#插入文本
+plt.xticks(list-like,rotation)#x轴的刻度
+plt.yticks()#y轴的刻度
+plt.xlabel()#x轴的标签
+plt.ylabel()#x轴的标签
+plt.xlim()#限制x轴的范围
+plt.ylim()#限制y轴的范围
+plt.show()#显示
+plt.savefig('path/img.png',dpi=300,bbox_inches='tight')#保存图片
+
+(2)绘制子图
+fig = plt.figure(figsize=(10,5))#
+ax = fig.subplot(2,3)#说明需要绘制多少个子图
+ax[0][0].plot()
+ax[0][0].set_xticklabels()#设置x轴刻度标签
+ax[0][0].set_xlabel()#设置x轴的标签
+ax[0][0].set_xlim()#设置x轴的范围
+ax[0][0].set_grid()#显示网格
+
+plt.show()#显示
+plt.savefig('path/img.png',dpi=300,bbox_inches='tight')#保存图片
+
+5.2 pandas的绘图
+pandas的绘图功能是以matplotlib为基础的
+df.plot(kind='line',xlim,ylim,grid)#绘制线状图
+df.plot(kind='barh',stacked=True)#绘制柱状图
+S.hist(bins,density)#绘制条形图
+S.plot(kind='kde')#绘制核密度图，就是一个线状图
+
+6.缺失值的处理
+(1)dropna()#滤除缺失值,只要出现缺失值，就将整行直接删除
+dropna(axis=0,how='all')#how='all'全行都为缺失值的时候，才滤除
+(2)fillna()#填充缺失值
+df['column1'].fillna(value)、df.fillna({'column1':value})#用value直接填充
+df.fillna(method='ffill',limit=1,inplace=True)#method:'bfiil'、'ffill';limit限制填充的连续数量;inplace=True:直接改变df对象
+(3)replace()#替换
+df['column1'].replace(np.nan,value)#替换缺失值
+df['column1'].replace(value1,value2)#将value1替换成value2
+
+7.字符串的处理
+只有Seires对象有字符串处理方法
+series.str.upper()/series.str.lower()/series.str.title()#大写、小写、第一个字母大写
+series.str.strip()#去除字符串两边的\r\n\t
+series.str.split('cond')#拆分,cond值拆分条件
+series.str.join('cond')#合并，将列表里面的元素进行合并
+series.str.replace()#替换
+series.str.contains('cond')#判断是否包含cond,如果包含，则对应的位置返回True
+series.str.slice(start,stop,step)#切片
+series.str.startswinth('cond')#判断是否以cond开始
+series.str.endswith()#判断以什么结束
+
+8.重复项和重命名索引
+df.duplicated(keep='first')#判断是否重复，如果重复，返回True
+df.drop_duplictes()#删除重复项
+
+df.rename(index=str.upper,columns=str.lower)#传的是函数名
+df.rename(index={},columns={})
+
+9.离散化
+(1)等距离散化cut()
+#data针对的数据集list-like形式，bins:可以指明int类型是分成等距几等份，list类型具体怎么划分
+#labels更换的标签，right是关于闭合区间的设置
+pd.cut(data,bins,right=True,labels)
+(2)等频离散化
+#data针对的数据集list-like形式，bins:可以指明int类型是分成等频几等份，list类型说明分位数的列表
+#labels更换的标签，right是关于闭合区间的设置
+pd.cut(data,bins,right=True,labels)
+
+10.基本处理方法
+10.1 丢弃行或列
+df.drop(['column1','column2'],axis=1)#丢弃‘column1’、‘column2’这两列
+df.drop(['index1','index2'],axis=0)#丢弃行
+10.2 函数映射
+df.apply('fun')#逐行传递到自定义的函数fun里面处理
+df.applymap('fun')#逐元素传递到自定义的函数fun里面处理
+
+series.apply('fun')/series.map('fun')#逐元素处理Series对象
+10.3 排序
+df.sort_index(axis=0,ascending=True)#基于索引名排序
+df.sort_values(axis=0,by=['column1'],ascending=False)#基于某一列或者多列进行排序
+
+11.数据合并
+11.1 merge()
+df1.merge(df2,left_on='key1',right_on='key2',how='inner')#基于列进行合并，how有多种方式：inner：内联、outer：外联、left:左联、right：右联
+df1.merge(df2,on='key')#如果两个表合并的依据的列名是同名的时候，可以直接用on来代替left_on和right_on
+df1.merge(df2,left_index=True,right_index=True,how='outer')#基于行索引进行外联合并
+df1.merge(df2,left_index=True,right_on='key')#可以混合考虑索引和某一列来进行合并
+11.2 concat()#轴方向上的合并
+pd.concat([df1,df2,df3],axis=0)#将df1、df2、df3三个数据表在axis=0的方向进行合并
+11.3 combine_first()#打补丁
+df1.combine_first(df2)#如果df1中某些位置的数据是缺失的，可以用df2中对应位置的值来填补
+
+12. 统计
+12.1 基本统计
+df.sum(axis=0，skip_na=True)#统计的每一列总和
+df.count()#每一列数量
+series.count()
+df.mean()#每一列的均值
+df.median()#中位数
+df.describe()#返回常规一些统计量：count、mean、min、max、分位数
+12.2 协方差和相关系数
+df.cov()#协方差，返回的是一个对称的DataFrame对象,计算的时候只考虑np.number类型（int/float）对应的列
+df['column1'].cov(df['column2']#计算两个变量之间的协方差
+
+df.corr()#相关系数，返回的结果的是对称矩阵
+df['column1'].corr(df['column2']#计算两个变量之间的相关系数
+
+13. 数据分组
+13.1 groupby()：拆分-合并-应用
+df.grouby(['key','key1'])['column1'].mean()#基于key的分组求平均值，应用可以是pandas自带的函数：count、sum、median等
+
+def fun(s,parms):#自定义的函数
+   pass
+df.groupby(['key','key'])['column1'].apply(fun,parms)#可以通过apply对自定义的函数fun进行应用，其中fun是自定义的函数，parms是fun的参数
+13.2 pivot_table()#透视表
+df.pivot_table(value,index,columns,aggfunc,margins=True)#透视表,aggfunc默认为numpy.mean
+13.3 crosstab()#交叉表，默认统计频数
+pd.crosstab(value=df['column1'],index=df['column2'],columns=df['column3'],aggfunc=np.mean,margins=True)#交叉表

@@ -163,6 +163,10 @@ df['column1'].corr(df['column2']#计算两个变量之间的相关系数
 13. 数据分组
 13.1 groupby()：拆分-合并-应用
 df.grouby(['key','key1'])['column1'].mean()#基于key的分组求平均值，应用可以是pandas自带的函数：count、sum、median等
+#保存分组后的结果用reset_index
+data = df.grouby(['key1','key2'])['column1'].sum()  #Series对象保存到excel或csv里面只保留了值，没有column
+data = data.reset_index() #reset_index()函数转换后为DataFrame
+data.to_excel('d:\aa.xlsx',index=False,sheet_name='Sheet1')
 
 def fun(s,parms):#自定义的函数
    pass
